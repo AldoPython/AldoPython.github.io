@@ -1,0 +1,316 @@
+---
+import Layout from '../layouts/Layout.astro';
+
+const stats = [
+  { n: '42K', suffix: '+', l: 'Lines shipped' },
+  { n: '35', suffix: '+', l: 'APIs decoded' },
+  { n: '2', suffix: '', l: 'Full platforms' },
+  { n: '6', suffix: '+', l: 'Client systems' },
+];
+
+const ticker = [
+  'Reverse Engineering', 'AES · RSA · HMAC', 'Protocol Buffers · gRPC',
+  'FastAPI · Redis', 'FFmpeg · HLS', 'Playwright · Camoufox',
+  'Telegram Bots', 'Astro · HTMX', 'AI · MCP · Gemini',
+];
+
+const approach = [
+  { idx: 'decode', h: 'Understand the target', p: 'Capture traffic, break the signing and encryption, and map exactly how a closed system talks — signatures, tokens, protobuf, expiring URLs.' },
+  { idx: 'unify', h: 'Platform-ise it', p: 'Fold every target behind one clean interface: plugin-per-source, shared auth, caching, scheduling, and an ops control panel. Prototype → platform.' },
+  { idx: 'ship', h: 'Make it run in production', p: 'Rate limits, failover, token auto-refresh, monitoring. Software that keeps working when I’m not watching it — and that clients depend on daily.' },
+];
+
+const skills = [
+  { h: 'Reverse Engineering', t: 'Mobile API signing · request signatures · Protocol Buffers / gRPC · token & session flows · traffic capture' },
+  { h: 'Applied Cryptography', t: 'AES-256-CBC · RSA · HMAC-SHA256 · MD5 signing · key derivation · payload decryption' },
+  { h: 'Backend & Architecture', t: 'FastAPI · Flask · Redis caching · plugin registries · rate limiting · schedulers · REST design' },
+  { h: 'Media & Streaming', t: 'FFmpeg / ffprobe · in-memory transcode · HLS proxy & decrypt · subtitle burn-in · failover' },
+  { h: 'Automation & Anti-bot', t: 'Playwright · Camoufox · TLS fingerprinting (curl_cffi) · challenge handling · Telegram control bots' },
+  { h: 'AI & Frontend', t: 'LLM integration (Gemini) · MCP tooling · Astro · HTMX · Jinja2 · desktop GUIs' },
+];
+
+const work = [
+  {
+    cat: 'Backend · Architecture', h: 'Aggregation API Platform',
+    p: 'A modular content-aggregation API that unifies 35+ reverse-engineered mobile backends behind one clean REST interface. Plugin-per-source, Redis caching, rate limiting, automatic token refresh, and a Telegram ops bot.',
+    metrics: [{ v: '42,410', l: 'Lines of code' }, { v: '35+', l: 'Source plugins' }],
+    stack: ['FastAPI', 'Redis', 'Plugin arch', 'Telegram'],
+  },
+  {
+    cat: 'Media · Streaming', h: 'In-Memory Transcoder',
+    p: 'A zero-disk streaming microservice that transcodes any codec — including H.265 — to 720p H.264 on the fly through a single-lane FFmpeg pipe, with automatic failover between nodes.',
+    metrics: [{ v: '0-disk', l: 'In-memory pipe' }, { v: 'H.265→H.264', l: 'Live transcode' }],
+    stack: ['FastAPI', 'FFmpeg', 'httpx', 'Async'],
+  },
+  {
+    cat: 'Frontend · Product', h: 'White-label Frontend System',
+    p: 'One backend, many brands. A multi-template Astro frontend with a middleware layer and its own datastore — designed to re-skin an entire product per client without touching the core.',
+    metrics: [{ v: '3', l: 'Swappable templates' }, { v: '1', l: 'Shared core' }],
+    stack: ['Astro', 'Node', 'FastAPI', 'SQL'],
+  },
+  {
+    cat: 'AI · Tooling', h: 'AI Trading Co-Pilot',
+    p: 'A CLI-first, MCP-ready trading assistant: multi-timeframe market reads, risk sizing, and paper-trade journaling in SQLite, wrapped in fail-closed safety rules. Its decision skill was stress-audited across three different AI models.',
+    metrics: [{ v: 'Fail-closed', l: 'Risk guard' }, { v: 'MCP', l: 'Agent-ready' }],
+    stack: ['Python CLI', 'SQLite', 'MCP', 'RSS'],
+  },
+];
+
+const confidential = [
+  {
+    cat: 'Travel sector', badge: 'NDA', h: 'Enterprise Booking Automation',
+    parts: ['Built for a licensed ', { r: '██████████' }, ' operator to automate a high-volume, repetitive booking & registration workflow — reclaiming operator hours on a process that was fully manual before. Delivered at the client’s request and under their authority.'],
+    stack: ['Session pooling', 'Bulk automation', 'Data pipelines'],
+  },
+  {
+    cat: 'SaaS / AI platform', badge: 'NDA', h: 'Account Lifecycle Automation',
+    parts: ['End-to-end automated account provisioning for a ', { r: '████████' }, ' platform, driven from a Telegram control panel with async workers and a companion web app.'],
+    stack: ['Telegram bot', 'Async workers', 'Web app'],
+  },
+  {
+    cat: 'R&D', badge: 'Private', h: 'Anti-bot & Signal Research',
+    parts: ['Hands-on research into modern bot-protection: TLS fingerprint spoofing, browser challenge solving, and anti-detect browser automation against ', { r: '████████' }, ' targets.'],
+    stack: ['curl_cffi', 'Playwright', 'Camoufox'],
+  },
+  {
+    cat: 'Platform ops', badge: 'NDA', h: 'Multi-platform Automation Engine',
+    parts: ['A unified automation engine coordinating many ', { r: '██████' }, ' accounts across platforms, with a scheduler, shared auth, and per-platform plugins — the same platform-ise instinct, applied to operations.'],
+    stack: ['Plugin arch', 'Scheduler', 'Auth flows'],
+  },
+];
+
+const githubIcon = '<path d="M12 2C6.48 2 2 6.58 2 12.25c0 4.53 2.87 8.37 6.84 9.73.5.1.68-.22.68-.49 0-.24-.01-.87-.01-1.71-2.78.62-3.37-1.37-3.37-1.37-.45-1.18-1.11-1.49-1.11-1.49-.91-.64.07-.62.07-.62 1 .07 1.53 1.06 1.53 1.06.89 1.56 2.34 1.11 2.91.85.09-.66.35-1.11.63-1.37-2.22-.26-4.56-1.14-4.56-5.06 0-1.12.39-2.03 1.03-2.75-.1-.26-.45-1.3.1-2.71 0 0 .84-.28 2.75 1.05a9.3 9.3 0 0 1 5 0c1.91-1.33 2.75-1.05 2.75-1.05.55 1.41.2 2.45.1 2.71.64.72 1.03 1.63 1.03 2.75 0 3.93-2.34 4.79-4.57 5.05.36.32.68.94.68 1.9 0 1.37-.01 2.48-.01 2.82 0 .27.18.6.69.49A10.02 10.02 0 0 0 22 12.25C22 6.58 17.52 2 12 2z"/>';
+const lockIcon = '<rect x="4" y="10" width="16" height="11" rx="2"/><path d="M8 10V7a4 4 0 0 1 8 0v3"/>';
+---
+<Layout>
+  <div class="field" aria-hidden="true"></div>
+
+  <header class="nav" id="nav">
+    <div class="nav-inner">
+      <a class="brand" href="#top"><span class="dot"></span>AldoPython</a>
+      <nav class="nav-links">
+        <a href="#approach">Approach</a>
+        <a href="#skills">Capabilities</a>
+        <a href="#work">Work</a>
+        <a href="#confidential">Client&nbsp;Work</a>
+      </nav>
+      <a class="nav-cta" href="https://github.com/AldoPython" target="_blank" rel="noopener">GitHub&nbsp;↗</a>
+    </div>
+  </header>
+
+  <main id="top">
+    <!-- HERO -->
+    <section class="hero">
+      <div class="wrap hero-grid">
+        <div class="hero-copy">
+          <span class="status"><span class="pulse"></span>Available for freelance &amp; contract work</span>
+          <h1 class="title">
+            <span class="lede">// reverse-engineering · backend · automation</span>
+            <span class="decrypt" data-text="I take systems apart">I take systems apart</span><br />
+            <span class="hl decrypt" data-text="and rebuild them better.">and rebuild them better.</span>
+          </h1>
+          <p class="sub">I&apos;m Aldo — a solo engineer who decodes closed mobile APIs, then turns the findings into clean backends, streaming infrastructure, and automation that real businesses run on.</p>
+          <div class="cta-row">
+            <a class="btn primary" href="#work">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M13 6l6 6-6 6"/></svg>
+              See the work
+            </a>
+            <a class="btn ghost" href="https://github.com/AldoPython" target="_blank" rel="noopener">
+              <svg viewBox="0 0 24 24" fill="currentColor" set:html={githubIcon}></svg>
+              github.com/AldoPython
+            </a>
+          </div>
+          <div class="stats">
+            {stats.map((s) => (
+              <div class="stat"><div class="n"><b>{s.n}</b>{s.suffix}</div><div class="l">{s.l}</div></div>
+            ))}
+          </div>
+        </div>
+
+        <div class="portrait">
+          <div class="portrait-frame">
+            <span class="ring r1"></span><span class="ring r2"></span>
+            <img src="/avatar.png" width="360" height="360" alt="Illustrated portrait of Aldo working on a laptop" />
+          </div>
+          <div class="chip-float cf1"><span class="k">status</span> = online</div>
+          <div class="chip-float cf2"><span class="k">stack</span> = Python·FastAPI</div>
+          <div class="chip-float cf3"><span class="k">mode</span> = build &amp; ship</div>
+        </div>
+      </div>
+
+      <div class="ticker" aria-hidden="true">
+        <div class="ticker-track">
+          {[...ticker, ...ticker].map((t) => (
+            <><span>{t}</span><span><b>/</b></span></>
+          ))}
+        </div>
+      </div>
+    </section>
+
+    <!-- APPROACH -->
+    <section class="block" id="approach">
+      <div class="wrap">
+        <div class="head reveal">
+          <span class="eyebrow">How I work</span>
+          <h2>A protocol for every problem.</h2>
+          <p>I don&apos;t ship one-off scripts. My instinct is to turn a messy target into a clean, reusable platform — the same pattern I&apos;ve applied independently across very different domains.</p>
+        </div>
+        <div class="approach">
+          {approach.map((a) => (
+            <div class="card reveal"><div class="idx">{a.idx}</div><h3>{a.h}</h3><p>{a.p}</p></div>
+          ))}
+        </div>
+      </div>
+    </section>
+
+    <!-- SKILLS -->
+    <section class="block" id="skills" style="padding-top:0">
+      <div class="wrap">
+        <div class="head reveal">
+          <span class="eyebrow">Capabilities</span>
+          <h2>What I can actually build.</h2>
+          <p>Depth in the unglamorous parts — signing, crypto, streaming, anti-bot — that most people route around.</p>
+        </div>
+        <div class="skills reveal">
+          {skills.map((s) => (
+            <div class="skill"><h3><span class="bar"></span>{s.h}</h3><div class="tags">{s.t}</div></div>
+          ))}
+        </div>
+      </div>
+    </section>
+
+    <!-- WORK -->
+    <section class="block" id="work" style="padding-top:0">
+      <div class="wrap">
+        <div class="head reveal">
+          <span class="eyebrow">Selected work</span>
+          <h2>Platforms, not scripts.</h2>
+          <p>Flagship builds where the engineering carries the whole product.</p>
+        </div>
+        <div class="projects">
+          {work.map((w) => (
+            <article class="proj reveal">
+              <div class="kicker"><span class="cat">{w.cat}</span></div>
+              <h3 class="decrypt" data-text={w.h}>{w.h}</h3>
+              <p>{w.p}</p>
+              <div class="metrics">
+                {w.metrics.map((m) => (
+                  <div class="m"><div class="mv">{m.v}</div><div class="ml">{m.l}</div></div>
+                ))}
+              </div>
+              <div class="stack">{w.stack.map((s) => <span>{s}</span>)}</div>
+            </article>
+          ))}
+        </div>
+      </div>
+    </section>
+
+    <!-- CONFIDENTIAL -->
+    <section class="block" id="confidential" style="padding-top:0">
+      <div class="wrap">
+        <div class="head reveal">
+          <span class="eyebrow">Client work · under NDA</span>
+          <h2>Commissioned &amp; confidential.</h2>
+          <p>Real, paid systems built at clients&apos; request and under their authority. The <em>capability</em> is on the table — the client names and exact targets stay redacted.</p>
+        </div>
+        <div class="projects">
+          {confidential.map((c) => (
+            <article class="proj conf reveal">
+              <div class="kicker">
+                <span class="cat">{c.cat}</span>
+                <span class="lock"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" set:html={lockIcon}></svg>{c.badge}</span>
+              </div>
+              <h3>{c.h}</h3>
+              <p>{c.parts.map((part) => (typeof part === 'string' ? part : <span class="redact">{part.r}</span>))}</p>
+              <div class="stack">{c.stack.map((s) => <span>{s}</span>)}</div>
+            </article>
+          ))}
+        </div>
+
+        <div class="nda-note reveal">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2 4 6v6c0 5 3.5 8 8 10 4.5-2 8-5 8-10V6l-8-4z"/></svg>
+          <div>These projects are covered by client confidentiality. I&apos;m happy to walk through the architecture, trade-offs, and my exact role in a private conversation — the redactions protect the client, not the work.</div>
+        </div>
+      </div>
+    </section>
+
+    <!-- CONTACT -->
+    <section class="contact" id="contact">
+      <div class="wrap">
+        <span class="eyebrow">Let&apos;s build</span>
+        <h2>Have a system that needs cracking<br />— or one worth building?</h2>
+        <p>Backend, reverse-engineering, streaming, or automation — if it&apos;s hard and specific, it&apos;s my kind of work. Start on GitHub.</p>
+        <div class="cta-row">
+          <a class="btn primary" href="https://github.com/AldoPython" target="_blank" rel="noopener">
+            <svg viewBox="0 0 24 24" fill="currentColor" set:html={githubIcon}></svg>
+            github.com/AldoPython
+          </a>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <footer>
+    <div class="foot-inner">
+      <span>© <span id="yr"></span> Aldo — built from scratch, no templates.</span>
+      <a href="https://github.com/AldoPython" target="_blank" rel="noopener">github.com/AldoPython ↗</a>
+    </div>
+  </footer>
+</Layout>
+
+<script>
+  document.getElementById('yr').textContent = String(new Date().getFullYear());
+
+  const nav = document.getElementById('nav');
+  const onScroll = () => nav.classList.toggle('stuck', window.scrollY > 12);
+  onScroll();
+  window.addEventListener('scroll', onScroll, { passive: true });
+
+  const reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+  const io = new IntersectionObserver((entries) => {
+    entries.forEach((e) => {
+      if (e.isIntersecting) { e.target.classList.add('in'); io.unobserve(e.target); }
+    });
+  }, { threshold: 0.14 });
+  document.querySelectorAll('.reveal').forEach((el) => io.observe(el));
+
+  const GLYPHS = '!<>-_\\/[]{}=+*^?#________0123456789ABCDEF';
+  function scramble(el) {
+    const target = el.dataset.text;
+    let frame = 0;
+    const queue = [];
+    for (let i = 0; i < target.length; i++) {
+      const start = Math.floor(Math.random() * 18);
+      const end = start + Math.floor(Math.random() * 22) + 8;
+      queue.push({ to: target[i], start, end, ch: null });
+    }
+    const tick = () => {
+      let out = '', done = 0;
+      for (const q of queue) {
+        if (frame >= q.end) { done++; out += q.to; }
+        else if (frame >= q.start) {
+          if (!q.ch || Math.random() < 0.3) q.ch = GLYPHS[Math.floor(Math.random() * GLYPHS.length)];
+          out += '<span style="color:var(--muted-dim)">' + q.ch + '</span>';
+        }
+      }
+      el.innerHTML = out;
+      if (done === queue.length) { el.textContent = target; return; }
+      frame++; requestAnimationFrame(tick);
+    };
+    tick();
+  }
+
+  document.querySelectorAll('.decrypt').forEach((el) => {
+    if (reduce) { el.textContent = el.dataset.text; return; }
+    if (el.closest('.hero')) {
+      el.textContent = '';
+      setTimeout(() => scramble(el), 250 + Math.random() * 200);
+    } else {
+      const once = new IntersectionObserver((ents) => {
+        ents.forEach((en) => { if (en.isIntersecting) { scramble(el); once.unobserve(en.target); } });
+      }, { threshold: 0.6 });
+      once.observe(el);
+    }
+  });
+</script>
