@@ -276,6 +276,7 @@ const lockIcon = '<rect x="4" y="10" width="16" height="11" rx="2"/><path d="M8 
   document.querySelectorAll('.reveal').forEach((el) => io.observe(el));
 
   const GLYPHS = '!<>-_\\/[]{}=+*^?#________0123456789ABCDEF';
+  const rndGlyph = () => GLYPHS[Math.floor(Math.random() * GLYPHS.length)];
   function scramble(el) {
     const target = el.dataset.text;
     let frame = 0;
@@ -288,10 +289,18 @@ const lockIcon = '<rect x="4" y="10" width="16" height="11" rx="2"/><path d="M8 
     const tick = () => {
       let out = '', done = 0;
       for (const q of queue) {
+        // Keep real spaces as spaces — scrambling them into glyphs removes the
+        // word breaks, turning the line into one unbreakable string that widens
+        // the column and drags the portrait sideways.
+        if (q.to === ' ') { out += ' '; done++; continue; }
         if (frame >= q.end) { done++; out += q.to; }
         else if (frame >= q.start) {
-          if (!q.ch || Math.random() < 0.3) q.ch = GLYPHS[Math.floor(Math.random() * GLYPHS.length)];
+          if (!q.ch || Math.random() < 0.3) q.ch = rndGlyph();
           out += '<span style="color:var(--muted-dim)">' + q.ch + '</span>';
+        } else {
+          // Placeholder glyph so the text keeps its full length from frame 1,
+          // preventing the heading from collapsing then growing as it resolves.
+          out += '<span style="color:var(--muted-dim)">' + rndGlyph() + '</span>';
         }
       }
       el.innerHTML = out;
@@ -301,16 +310,25 @@ const lockIcon = '<rect x="4" y="10" width="16" height="11" rx="2"/><path d="M8 
     tick();
   }
 
+  // Project titles: decrypt when scrolled into view.
   document.querySelectorAll('.decrypt').forEach((el) => {
     if (reduce) { el.textContent = el.dataset.text; return; }
-    if (el.closest('.hero')) {
-      el.textContent = '';
-      setTimeout(() => scramble(el), 250 + Math.random() * 200);
-    } else {
-      const once = new IntersectionObserver((ents) => {
-        ents.forEach((en) => { if (en.isIntersecting) { scramble(el); once.unobserve(en.target); } });
-      }, { threshold: 0.6 });
-      once.observe(el);
-    }
+    if (el.closest('.hero')) return; // hero handled separately, after fonts load
+    const once = new IntersectionObserver((ents) => {
+      ents.forEach((en) => { if (en.isIntersecting) { scramble(en.target); once.unobserve(en.target); } });
+    }, { threshold: 0.6 });
+    once.observe(el);
   });
+
+  // Hero: lock the heading height first so the portrait next to it stays fixed,
+  // then decrypt. Wait for web fonts so the locked height matches the final text.
+  function startHero() {
+    const title = document.querySelector('h1.title');
+    if (title) title.style.minHeight = title.offsetHeight + 'px';
+    document.querySelectorAll('.hero .decrypt').forEach((el) => scramble(el));
+  }
+  if (!reduce) {
+    if (document.fonts && document.fonts.ready) document.fonts.ready.then(startHero);
+    else startHero();
+  }
 </script>

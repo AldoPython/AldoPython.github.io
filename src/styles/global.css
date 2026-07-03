@@ -76,7 +76,9 @@ header.nav.stuck{border-color:var(--line)}
 
 /* ---------- hero ---------- */
 .hero{padding:76px 0 40px}
-.hero-grid{display:grid;grid-template-columns:1.25fr .85fr;gap:56px;align-items:center}
+/* minmax(0,...) stops the text column from ever widening with its content,
+   so the portrait column never moves horizontally during the decrypt animation */
+.hero-grid{display:grid;grid-template-columns:minmax(0,1.25fr) minmax(0,.85fr);gap:56px;align-items:center}
 @media(max-width:900px){.hero-grid{grid-template-columns:1fr;gap:40px}}
 .status{display:inline-flex;align-items:center;gap:9px;font-family:'JetBrains Mono';
   font-size:.76rem;color:var(--muted);border:1px solid var(--line);
